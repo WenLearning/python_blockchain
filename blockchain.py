@@ -1,7 +1,12 @@
 # Initializing our (empty) blockchain list
-blockchain = []
+genesis_block = {
+    'previous_hash': '',
+    'index': 0,
+    'transactions': []
+}
+blockchain = [genesis_block]
 open_transactions = []
-
+owner = 'Wen'
 
 def get_last_blockchain_value():
     """ Returns the last value of the current blockchain. """
@@ -14,7 +19,7 @@ def get_last_blockchain_value():
 # The optional one is optional because it has a default value => [1]
 
 
-def add_transaction(sender, recipient, amount=1.0):
+def add_transaction(recipient, sender=owner, amount=1.0):
     """ Append a new transaction to open_transactions
 
     Arguments:
@@ -27,18 +32,23 @@ def add_transaction(sender, recipient, amount=1.0):
         "recipient": recipient,
         "amount": amount
     }
-
     open_transactions.append(transaction)
 
 def mine_block():
-    pass
-
+    last_block = blockchain[-1]
+    block = {
+        'previous_hash': 'dummy',
+        'index': len(blockchain),
+        'transactions': open_transactions
+    }
+    blockchain.append(block)
 
 def get_transaction_value():
     """ Returns the input of the user (a new transaction amount) as a float. """
     # Get the user input, transform it from a string to a float and store it in user_input
-    user_input = float(input('Your transaction amount please: '))
-    return user_input
+    tx_recipient = input('Enter the recipient of the transaction: ')
+    tx_amount = float(input('Your transaction amount please: '))
+    return (tx_recipient, tx_amount)
 
 
 def get_user_choice():
@@ -78,8 +88,10 @@ while waiting_for_input:
     print('q: Quit')
     user_choice = get_user_choice()
     if user_choice == '1':
-        tx_amount = get_transaction_value()
-        add_transaction(tx_amount, get_last_blockchain_value())
+        tx_data = get_transaction_value()
+        tx_recipient, tx_amount = tx_data
+        add_transaction(tx_recipient, amount=tx_amount)
+        print(open_transactions)
     elif user_choice == '2':
         print_blockchain_elements()
     elif user_choice == 'h':
